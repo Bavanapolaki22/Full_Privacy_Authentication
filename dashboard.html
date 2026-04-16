@@ -1,0 +1,501 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Final Student Showcase Theme: Cyber-Security Zero-Trust Vault -->
+<style>
+    :root {
+        --cyber-blue: #00d2ff;
+        --cyber-green: #39ff14;
+        --cyber-dark: #0a0e17;
+        --cyber-card: rgba(20, 25, 35, 0.85);
+    }
+
+    body {
+        background: radial-gradient(circle at center, #1a1f2c 0%, #0a0e17 100%);
+        color: #e0e0e0;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .glass-card {
+        background: var(--cyber-card);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+        border-color: var(--cyber-blue);
+        box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+    }
+
+    .stat-card { padding: 1.5rem; text-align: center; }
+    .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--cyber-blue); margin-bottom: 0; }
+    .stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #888; }
+
+    .btn-cyber { border-radius: 10px; font-weight: 600; letter-spacing: 0.5px; transition: all 0.3s ease; }
+    .btn-cyber-primary { background: linear-gradient(45deg, #00d2ff, #3a7bd5); border: none; color: white; }
+    .btn-cyber-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4); }
+    .btn-cyber-success { background: linear-gradient(45deg, #11998e, #38ef7d); border: none; color: white; }
+
+    .activity-item { border-left: 2px solid var(--cyber-blue); padding-left: 15px; margin-bottom: 12px; position: relative; }
+    .activity-time { font-size: 0.65rem; color: #666; font-family: monospace; }
+    .activity-action { font-weight: 600; color: #fff; font-size: 0.85rem; margin-bottom: 2px; }
+
+    .cipher-box {
+        background: #000;
+        border: 1px solid #333;
+        font-family: 'Fira Code', monospace;
+        padding: 12px;
+        font-size: 0.75rem;
+        color: var(--cyber-green);
+        border-radius: 10px;
+        word-break: break-all;
+        min-height: 60px;
+    }
+
+    @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+    .scanning::after {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: var(--cyber-blue); box-shadow: 0 0 10px var(--cyber-blue);
+        animation: scan 2s linear infinite; z-index: 10;
+    }
+</style>
+
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+            <h6 class="text-uppercase tracking-wider text-info mb-1" style="letter-spacing: 3px;">Infrastructure: Zero-Trust</h6>
+            <h1 class="display-5 fw-bold text-white mb-0">Secure HE Control Center</h1>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-dark border border-success text-success p-2 px-3 rounded-pill">
+                <i class="bi bi-shield-check me-1"></i> BFV PROTOCOL v1.2
+            </span>
+        </div>
+    </div>
+
+    <!-- Analytics Dashboard Row -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-2">
+            <div class="glass-card stat-card">
+                <p class="stat-value">{{ analytics.assets }}</p>
+                <p class="stat-label">Assets</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card stat-card">
+                <p class="stat-value">{{ analytics.weight }}</p>
+                <p class="stat-label">Weight</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card stat-card">
+                <p class="stat-value" style="font-size: 1.2rem; font-family: monospace;">{{ analytics.blinded_state }}</p>
+                <p class="stat-label">Blinded State</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="glass-card stat-card">
+                <p class="stat-value">{{ analytics.inbox }}</p>
+                <p class="stat-label">Inbox</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="glass-card stat-card">
+                <p class="stat-value">{{ analytics.score }}%</p>
+                <p class="stat-label">Integrity</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Interaction Panel (Left) -->
+        <div class="col-lg-8">
+            <div class="row g-4">
+                <!-- Blinded Computation Engine -->
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="text-white mb-0"><i class="bi bi-cpu me-2 text-info"></i>Blinded Computation Engine</h5>
+                            <button onclick="showChallenge('num')" class="btn btn-outline-info btn-sm px-3 rounded-pill">REVEAL RESULT</button>
+                        </div>
+                        <p class="x-small text-muted mb-4">Perform mathematical operations directly on encrypted ciphertexts. The server computes E(a) + E(b) or E(a) * b without knowing the plaintext values.</p>
+                        
+                        <form action="{{ url_for('homomorphic_add') }}" method="POST" class="row g-3">
+                            <div class="col-md-3">
+                                <input type="number" name="add_value" class="form-control bg-dark border-secondary text-white" placeholder="Payload..." required style="border-radius: 10px;">
+                            </div>
+                            <div class="col-md-3">
+                                <select name="operation" class="form-select bg-dark border-secondary text-white" style="border-radius: 10px;">
+                                    <option value="add">Add (+)</option>
+                                    <option value="multiply">Multiply (*)</option>
+                                    <option value="set">Set / Reset (=)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="password" name="password" class="form-control bg-dark border-secondary text-white" placeholder="Authorize" required style="border-radius: 10px;">
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-cyber btn-cyber-primary w-100">COMPUTE</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Secure Messaging -->
+                <div class="col-md-6">
+                    <div class="glass-card p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="text-white mb-0"><i class="bi bi-chat-left-dots me-2 text-info"></i>Secure Messaging</h5>
+                            <button onclick="showChallenge('inbox')" class="btn btn-outline-info btn-sm px-2 rounded-pill" style="font-size: 0.7rem;">INBOX</button>
+                        </div>
+                        <form action="{{ url_for('encrypt_text') }}" method="POST">
+                            <textarea name="secret_text" class="form-control bg-dark border-secondary text-white mb-2" rows="2" placeholder="Secret message..." required style="border-radius: 12px; font-size: 0.85rem;"></textarea>
+                            
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <select name="recipient" class="form-select bg-dark border-secondary text-white" style="border-radius: 10px; font-size: 0.8rem;">
+                                        <option value="">Personal Vault</option>
+                                        {% for user in all_users %}
+                                            <option value="{{ user }}">{{ user }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <input type="password" name="password" class="form-control bg-dark border-secondary text-white" placeholder="Password" required style="border-radius: 10px; font-size: 0.8rem;">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-cyber btn-cyber-primary btn-sm w-100 py-2">DISPATCH BLINDED</button>
+                        </form>
+                        <div class="mt-3">
+                            <label class="stat-label mb-1 d-block" style="font-size: 0.6rem;">Personal Cipher-Stream</label>
+                            <div class="cipher-box" style="font-size: 0.65rem; min-height: 40px;">{{ encrypted_text if encrypted_text else '// Null payload' }}</div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <button onclick="showChallenge('text')" class="btn btn-link text-info btn-sm text-decoration-none p-0" style="font-size: 0.75rem;">🔓 Reveal</button>
+                            <button onclick="showChallenge('delete_text')" class="btn btn-link text-danger btn-sm text-decoration-none p-0" style="font-size: 0.75rem;"><i class="bi bi-trash"></i> Purge</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-Media Vault -->
+                <div class="col-md-6">
+                    <div class="glass-card p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="text-white mb-0"><i class="bi bi-folder2-open me-2 text-info"></i>Multi-Media Vault</h5>
+                            {% if files %}
+                                <button onclick="showChallenge('clear_vault')" class="btn btn-outline-danger btn-sm px-2 rounded-pill" style="font-size: 0.7rem;">PURGE ALL</button>
+                            {% endif %}
+                        </div>
+                        <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <input class="form-control bg-dark border-secondary text-white" type="file" name="file" required style="border-radius: 10px;">
+                            </div>
+                            <input type="password" name="password" class="form-control bg-dark border-secondary text-white mb-3" placeholder="Vault Password" required style="border-radius: 10px;">
+                            <button type="submit" class="btn btn-cyber btn-cyber-success w-100">SECURE ASSET</button>
+                        </form>
+                        <div class="mt-4">
+                            <label class="stat-label mb-2 d-block">Encrypted Assets</label>
+                            <div class="overflow-auto" style="max-height: 180px;">
+                                {% for file in files %}
+                                    <div class="d-flex justify-content-between align-items-center p-2 mb-2 bg-dark bg-opacity-50 rounded border border-secondary border-opacity-25">
+                                        <div class="text-truncate" style="max-width: 60%;">
+                                            <span class="text-white small fw-bold">{{ file.name }}</span>
+                                            <div class="activity-time">{{ file.size }} bytes</div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button onclick="showChallenge('file', '{{ file.id|b64encode }}')" class="btn btn-sm btn-link text-info p-1" title="View"><i class="bi bi-eye"></i></button>
+                                            <button onclick="showChallenge('download', '{{ file.id|b64encode }}')" class="btn btn-sm btn-link text-success p-1" title="Download"><i class="bi bi-download"></i></button>
+                                            <button onclick="showChallenge('delete_file', '{{ file.id|b64encode }}')" class="btn btn-sm btn-link text-danger p-1" title="Delete"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="text-muted small italic p-2">// Vault empty</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Activity Log -->
+        <div class="col-lg-4">
+            <div class="glass-card p-4 h-100 d-flex flex-column">
+                <h5 class="text-white mb-4"><i class="bi bi-activity me-2 text-info"></i>Security Audit Log</h5>
+                <div class="activity-feed flex-grow-1">
+                    {% for act in activities %}
+                        <div class="activity-item">
+                            <div class="activity-time">{{ act.timestamp }}</div>
+                            <div class="activity-action">{{ act.action }}</div>
+                            <div class="x-small text-muted">{{ act.details }}</div>
+                        </div>
+                    {% else %}
+                        <div class="text-muted small italic">// No audit logs available</div>
+                    {% endfor %}
+                </div>
+                <div class="mt-4 p-3 bg-info bg-opacity-10 rounded border border-info border-opacity-25">
+                    <h6 class="text-info small fw-bold text-uppercase">Persistent Entropy</h6>
+                    <p class="x-small text-muted mb-0">System uses <strong>PBKDF2-HMAC-SHA256</strong> derivation. Every session is unique and isolated.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="challengeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content glass-card border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0"><h5 class="modal-title w-100 text-center text-white fw-bold">KEY DERIVATION</h5></div>
+                <div class="modal-body p-4">
+                    <p class="x-small text-center text-muted mb-4">Derive 128-bit HE secret key from password payload.</p>
+                    <input type="hidden" id="challengeTarget">
+                    <input type="password" id="challengePassword" class="form-control bg-dark border-secondary text-white text-center mb-3" placeholder="••••••••" style="border-radius: 10px;">
+                    <div id="challengeError" class="text-danger x-small text-center mt-2 d-none">Handshake failed!</div>
+                    <div id="processingStatus" class="text-info x-small text-center mt-2 d-none">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>Unblinding...
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0 gap-2">
+                    <button type="button" class="btn btn-dark btn-sm flex-fill rounded-pill" data-bs-dismiss="modal">ABORT</button>
+                    <button type="button" id="confirmChallenge" class="btn btn-cyber-primary btn-sm flex-fill rounded-pill">AUTHORIZE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="decryptModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-card border-0 shadow-2xl overflow-hidden">
+                <div class="modal-header border-0 bg-dark bg-opacity-50">
+                    <h5 class="modal-title text-white fw-bold"><i class="bi bi-unlock me-2 text-info"></i>Decrypted Asset</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-0 position-relative" id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Download Form -->
+    <form id="downloadForm" method="POST" style="display: none;">
+        <input type="hidden" name="password" id="downloadPassword">
+        <input type="hidden" name="file_id" id="downloadFileId">
+    </form>
+
+    <div class="text-center mt-5">
+        <a href="{{ url_for('logout') }}" class="btn btn-link text-muted x-small text-decoration-none">
+            <i class="bi bi-power me-1"></i> TERMINATE SECURE INFRASTRUCTURE
+        </a>
+    </div>
+</div>
+
+<script>
+let currentAction = null;
+const challengeModalEl = document.getElementById('challengeModal');
+const challengeModal = new bootstrap.Modal(challengeModalEl);
+const decryptModalEl = document.getElementById('decryptModal');
+const decryptModal = new bootstrap.Modal(decryptModalEl);
+
+function showChallenge(action, target = null) {
+    currentAction = action; 
+    document.getElementById('challengeTarget').value = target || '';
+    document.getElementById('challengePassword').value = '';
+    document.getElementById('challengeError').classList.add('d-none');
+    document.getElementById('processingStatus').classList.add('d-none');
+    
+    // Update modal title for context
+    const title = document.querySelector('#challengeModal .modal-title');
+    if (action === 'delete_file') title.innerHTML = 'AUTHORIZE DELETION';
+    else if (action === 'clear_vault') title.innerHTML = 'AUTHORIZE FULL PURGE';
+    else if (action === 'download') title.innerHTML = 'AUTHORIZE DOWNLOAD';
+    else if (action === 'file') title.innerHTML = 'AUTHORIZE VIEWING';
+    else title.innerHTML = 'KEY DERIVATION';
+    
+    challengeModal.show();
+}
+
+document.getElementById('confirmChallenge').addEventListener('click', () => {
+    const password = document.getElementById('challengePassword').value;
+    const target = document.getElementById('challengeTarget').value;
+    if (!password) return;
+    document.getElementById('processingStatus').classList.remove('d-none');
+    document.getElementById('challengeError').classList.add('d-none');
+
+    if (currentAction === 'text') decryptText(password);
+    else if (currentAction === 'delete_text') deleteText(password);
+    else if (currentAction === 'inbox') getInbox(password);
+    else if (currentAction === 'file') decryptFile(target, password);
+    else if (currentAction === 'download') downloadFile(target, password);
+    else if (currentAction === 'delete_file') deleteFile(target, password);
+    else if (currentAction === 'clear_vault') clearVault(password);
+    else if (currentAction === 'num') decryptNum(password);
+});
+
+function clearVault(password) {
+    const btn = document.getElementById('confirmChallenge');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>WIPING VAULT...';
+    btn.disabled = true;
+
+    fetch('/clear_vault', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password })
+    }).then(res => {
+        if (!res.ok) {
+            return res.json().then(errData => { throw new Error(errData.error || 'Server error'); });
+        }
+        return res.json();
+    }).then(data => {
+        if (data.success) {
+            challengeModal.hide();
+            location.reload();
+        } else {
+            throw new Error(data.error || 'Purge failed');
+        }
+    }).catch(err => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        handleError(err.message);
+    });
+}
+
+function deleteText(password) {
+    fetch('/delete_text', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password })
+    }).then(res => res.json()).then(data => {
+        if (data.error) handleError();
+        else {
+            challengeModal.hide();
+            location.reload();
+        }
+    }).catch(handleError);
+}
+
+function deleteFile(file_id, password) {
+    const btn = document.getElementById('confirmChallenge');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>PURGING...';
+    btn.disabled = true;
+
+    fetch('/delete_file', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password, file_id: file_id })
+    }).then(res => {
+        if (!res.ok) {
+            return res.json().then(errData => { throw new Error(errData.error || 'Server error'); });
+        }
+        return res.json();
+    }).then(data => {
+        if (data.success) {
+            challengeModal.hide();
+            // Show a quick success toast or just reload
+            location.reload();
+        } else {
+            throw new Error(data.error || 'Deletion failed');
+        }
+    }).catch(err => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        handleError(err.message);
+    });
+}
+
+function getInbox(password) {
+    fetch('/get_messages', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password })
+    }).then(res => res.json()).then(data => {
+        if (data.error) handleError(data.error);
+        else {
+            let content = '<div class="p-4 bg-dark text-white"><h6 class="text-info mb-4 border-bottom border-secondary pb-2">SECURE INBOX</h6>';
+            if (data.messages.length === 0) content += '<div class="text-muted small italic">// Inbox empty</div>';
+            else {
+                data.messages.forEach(msg => {
+                    content += `<div class="mb-3 p-2 border-start border-info bg-white bg-opacity-5">
+                        <div class="d-flex justify-content-between x-small text-info mb-1">
+                            <span>FROM: ${msg.sender}</span>
+                            <span>${msg.timestamp}</span>
+                        </div>
+                        <div class="small">${msg.text}</div>
+                    </div>`;
+                });
+            }
+            content += '</div>';
+            document.getElementById('modalContent').innerHTML = content;
+            challengeModal.hide();
+            setTimeout(() => decryptModal.show(), 400);
+        }
+    }).catch(handleError);
+}
+
+function decryptText(password) {
+    fetch('/decrypt_text_json', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password })
+    }).then(res => res.json()).then(data => {
+        if (data.error) handleError(data.error);
+        else {
+            document.getElementById('modalContent').innerHTML = `<div class="p-5 bg-dark text-white text-start" style="white-space: pre-wrap; font-family: 'Fira Code', monospace; font-size: 0.9rem;">${data.data}</div>`;
+            challengeModal.hide();
+            setTimeout(() => decryptModal.show(), 400);
+        }
+    }).catch(handleError);
+}
+
+function decryptFile(file_id, password) {
+    fetch('/decrypt_file', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password, file_id: file_id })
+    }).then(res => res.json()).then(data => {
+        if (data.error) handleError(data.error);
+        else {
+            let content = '';
+            if (data.type === 'image') content = `<div class="scanning position-relative"><img src="${data.data}" class="img-fluid" alt="Asset"></div>`;
+            else if (data.type === 'pdf') content = `<iframe src="${data.data}" width="100%" height="600px" style="border: none;"></iframe>`;
+            else if (data.type === 'text') content = `<div class="p-5 bg-dark text-white text-start" style="white-space: pre-wrap; font-family: 'Fira Code', monospace;">${data.data}</div>`;
+            else content = `<div class="p-5 text-white">${data.data}</div>`;
+            document.getElementById('modalContent').innerHTML = content;
+            challengeModal.hide();
+            setTimeout(() => decryptModal.show(), 400);
+        }
+    }).catch(handleError);
+}
+
+function decryptNum(password) {
+    fetch('/decrypt_num', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password })
+    }).then(res => res.json()).then(data => {
+        if (data.error) handleError(data.error);
+        else {
+            document.getElementById('modalContent').innerHTML = `<div class="p-5 text-white fs-4 fw-bold"><i class="bi bi-calculator me-3 text-info"></i>${data.data}</div>`;
+            challengeModal.hide();
+            setTimeout(() => decryptModal.show(), 400);
+        }
+    }).catch(handleError);
+}
+
+function downloadFile(file_id, password) {
+    const form = document.getElementById('downloadForm');
+    form.action = '/download_file';
+    document.getElementById('downloadPassword').value = password;
+    document.getElementById('downloadFileId').value = file_id;
+    form.submit();
+    challengeModal.hide();
+}
+
+function handleError(err) {
+    console.error("Vault Error:", err);
+    document.getElementById('processingStatus').classList.add('d-none');
+    const errEl = document.getElementById('challengeError');
+    errEl.textContent = err || "Handshake failed!";
+    errEl.classList.remove('d-none');
+}
+</script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code&display=swap" rel="stylesheet">
+{% endblock %}

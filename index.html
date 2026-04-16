@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --cyber-blue: #00d2ff;
+        --cyber-dark: #0a0e17;
+    }
+
+    body {
+        background: radial-gradient(circle at center, #1a1f2c 0%, #0a0e17 100%);
+        color: #e0e0e0;
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+    }
+
+    .hero-section {
+        padding: 100px 0;
+        position: relative;
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #fff, var(--cyber-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1.5rem;
+    }
+
+    .glass-card {
+        background: rgba(20, 25, 35, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 2rem;
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--cyber-blue);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--cyber-blue);
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-cyber {
+        padding: 12px 40px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cyber-primary {
+        background: var(--cyber-blue);
+        color: var(--cyber-dark);
+        border: none;
+    }
+
+    .btn-cyber-primary:hover {
+        box-shadow: 0 0 30px rgba(0, 210, 255, 0.5);
+        transform: scale(1.05);
+    }
+
+    .floating-shield {
+        font-size: 15rem;
+        color: rgba(0, 210, 255, 0.05);
+        position: absolute;
+        top: 50%;
+        right: 10%;
+        transform: translateY(-50%);
+        z-index: -1;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(-50%) translateX(0); }
+        50% { transform: translateY(-60%) translateX(20px); }
+    }
+</style>
+
+<div class="hero-section">
+    <i class="bi bi-shield-lock-fill floating-shield"></i>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h6 class="text-info text-uppercase fw-bold mb-3" style="letter-spacing: 3px;">Privacy-Preserving Infrastructure</h6>
+                <h1 class="hero-title">Next-Gen Zero Trust Authentication</h1>
+                <p class="lead text-muted mb-5 fs-4">
+                    Secure your digital assets with <strong>Homomorphic Encryption</strong>. 
+                    Compute on encrypted data without ever revealing the original plaintext to the server.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('register') }}" class="btn btn-cyber btn-cyber-primary">Initialize Vault</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-cyber">Secure Login</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5 pt-5 g-4">
+            <div class="col-md-4">
+                <div class="glass-card">
+                    <i class="bi bi-cpu feature-icon"></i>
+                    <h4>Blinded Computation</h4>
+                    <p class="text-muted small">Perform mathematical operations directly on ciphertexts using our BFV-inspired HE logic layer.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card">
+                    <i class="bi bi-incognito feature-icon"></i>
+                    <h4>Zero-Knowledge</h4>
+                    <p class="text-muted small">The server handles only blinded integers. Your secret keys never leave your possession.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card">
+                    <i class="bi bi-database-lock feature-icon"></i>
+                    <h4>Persistent Entropy</h4>
+                    <p class="text-muted small">High-security storage with salted PBKDF2 key derivation and persistent disk encryption.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Add Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+{% endblock %}

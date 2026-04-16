@@ -1,0 +1,29 @@
+PROJECT REPORT: Persistent Zero-Trust Vault using Homomorphic Encryption
+
+1. INTRODUCTION
+This project explores a high-security storage and authentication system that survives server restarts. By applying Homomorphic Encryption (HE) and persistent storage, the vault can securely manage multi-format data.
+
+2. OBJECTIVES
+- Implement a zero-trust model with persistent storage.
+- Secure user authentication via salted PBKDF2.
+- Perform byte-level blinding using a 128-bit key derived from the user's password.
+- Support persistent vault storage using a file-based system (Pickle).
+
+3. ARCHITECTURE & FEATURES
+- Authentication: Secure password hash verification via PBKDF2-HMAC-SHA256.
+- HE Vault: Supports any file format by encrypting the raw byte stream into large integers.
+- Persistence: All vault data (users, ciphertexts) is saved to 'vault_data.pkl' and reloaded upon startup.
+- Secure Viewer: Reconstructs original data in the browser only when the user provides their password.
+
+4. HOMOMORPHIC ENGINE (Persistent Zero-Trust)
+- Encryption: E(byte) = byte + (Noise * Key * Prime).
+- Decryption: D(ciphertext) = (ciphertext mod (Key * Prime)) mod 256.
+The Key is derived from the user's password and salt. The server stores only the sum (ciphertext) and never the Key or Noise.
+
+5. ADVANTAGES
+- Data Survival: Stored files and messages are not lost when the server is restarted.
+- Metadata & Content Protection: The content of files and messages is never exposed.
+- Perfect Fidelity: HE ensures bit-for-bit restoration of the original media.
+
+6. CONCLUSION
+The Persistent Zero-Trust Secure Vault provides a complete, robust demonstration of how Homomorphic Encryption can be used to build a privacy-first, zero-trust cloud storage platform.
